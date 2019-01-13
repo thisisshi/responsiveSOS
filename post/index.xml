@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Sonny Shi</title>
+    <link>/post/</link>
+    <description>Recent content in Posts on Sonny Shi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 13 Jan 2019 16:02:39 -0500</lastBuildDate>
+    
+	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Getting Up and Running with the Windows Subsystem for Linux</title>
+      <link>/post/up-and-running-wsl/</link>
+      <pubDate>Sun, 13 Jan 2019 16:02:39 -0500</pubDate>
+      
+      <guid>/post/up-and-running-wsl/</guid>
+      <description>This post first appeared on: dev.to
+An exercise in futility
+This weekend I started tinkering around with the Windows Subsystem for Linux (WSL). I was mainly inspired to really start experimenting when I saw /u/noahnichols2008&amp;rsquo;s post on reddit. Here are some of my thoughts/observations.
+Background I&amp;rsquo;m a software engineer working mainly in Python, AWS, Ansible, etc. I work on the open source cloud compliance rules engine Cloud Custodian and have been doing most of my development work recently on a 2016 15&amp;rdquo; Macbook Pro.</description>
+    </item>
+    
+  </channel>
+</rss>

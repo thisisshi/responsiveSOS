@@ -1,0 +1,295 @@
+<!doctype html>
+
+
+
+ <html class="no-js" lang=""> 
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Sonny Shi</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Serif+Pro|Source+Sans+Pro:400,600" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" crossorigin="anonymous">
+
+  <link rel="stylesheet" href=/css/main.css>
+  <link rel="stylesheet" href=/css/magnific-popup.css>
+
+  
+
+
+<html>
+  <body lang="en">
+  
+
+
+  <div id="main">
+    
+
+<div id="nav">
+  
+  <a href="/img/portrait.jpg" class="image-link">
+    <img class="logo" src="/img/portrait.jpg"/>
+  </a>
+  
+  
+  <ul>
+    
+      <li><a href="/">
+          <span>Home</span>
+      </a></li>
+    
+      <li><a href="/post/">
+          <span>All Articles</span>
+      </a></li>
+    
+  </ul>
+
+</div>
+
+    <h1><a href="/post/up-and-running-wsl/">Getting Up and Running with the Windows Subsystem for Linux</a></h1>
+    <p class="post-info animated fadeIn">2300 Words | Approximately 11 Minutes Read | Last Modified on January 13, 2019
+    
+
+<p>This post first appeared on: <a href="https://dev.to/winebaths/getting-up-and-running-with-the-windows-subsystem-for-linux-8oc">dev.to</a></p>
+
+<p><em>An exercise in futility</em></p>
+
+<p><img src="https://raw.githubusercontent.com/thisisshi/dotfiles/master/screenshot-win.png" alt="Screenfetch" /></p>
+
+<p>This weekend I started tinkering around with the Windows Subsystem for Linux (WSL). I was mainly inspired to really start experimenting when I saw /u/noahnichols2008&rsquo;s <a href="https://www.reddit.com/r/Windows10/comments/689to0/xfce4_on_windows_10/">post</a> on reddit. Here are some of my thoughts/observations.</p>
+
+<h2 id="background">Background</h2>
+
+<p>I&rsquo;m a software engineer working mainly in Python, AWS, Ansible, etc. I work on the open source cloud compliance rules engine <a href="https://www.github.com/capitalone/cloud-custodian">Cloud Custodian</a> and have been doing most of my development work recently on a 2016 15&rdquo; Macbook Pro. Previously, I survived through university working on a variety of Windows machines, from Windows 7, to 8, to 10, all without the WSL. During that time, I stood up multiple Ubuntu dual boots, VM&rsquo;s, etc. while also dipping my toes into <a href="https://www.vagrantup.com/">Vagrant</a>. These days, I mainly use <a href="https://www.iterm2.com">iTerm2</a> as my terminal emulator of choice on macOS, <a href="https://github.com/tmux/tmux">tmux</a> for logging in and out of random ec2 instances without pulling my hair out, and vim. Due to the nature of developing on and maintaining a large fleet of VM&rsquo;s in the cloud, I&rsquo;m more familiar with doing things the GNU/Linux way than the M$FT way.</p>
+
+<p>I bought myself a 12&rdquo; Macbook a few weeks ago to see if I would be able to handle the small size and the controversial butterfly keyboard. Despite all the hooplah that Apple gave to the keyswitches during the announcement, I just found the keyboard to be incredibly unimpressive, annoying to type on, and unreliable. I returned it, and put the idea of buying a laptop on the back burner for a while. A few things I did like about it, however were the size, screen, and USB-C. Luckily, the Huawei Matebook X went on sale that featured all those things&hellip; but it ran Windows.</p>
+
+<p>Again, I&rsquo;m not a stranger to Windows. I&rsquo;ve only relatively recently started working on macOS. For the vast majority of my life, I&rsquo;ve used Windows in various forms: desktop, 2 in 1&rsquo;s, tablets, and laptops. While all my experiences with Windows has been serviceable, the development experience has been a nightmare. When Microsoft announced WSL, I was very intrigued. Running GNU/Linux basically natively in Windows? Being able to get actual work done and then being able to edit photos in Lightroom or Photoshop without having to buy a Mac or run a VM? It all sounded too good to be true. After all, isn&rsquo;t this the same Microsoft whose former CEO Steve Ballmer once said:</p>
+
+<blockquote>
+<p>Linux is a cancer</p>
+</blockquote>
+
+<p>Well, I thought I&rsquo;d give it a shot.</p>
+
+<h2 id="setup">Setup</h2>
+
+<p>Getting WSL up and running in the first place is a pain in the ass by itself. WSL isn&rsquo;t enabled out of the box for some reason, possibly because Microsoft is too afraid of normies accidentally going into <code>cmd.exe</code> and typing <code>dir</code> instead of <code>ls</code>? Anyways, to get started you actually have to do a non-trivial amount of things first.</p>
+
+<h3 id="step-1-update-everything">Step 1: Update everything</h3>
+
+<p>If you want the latest and greatest features of the WSL, you&rsquo;re gonna have to spend some time doing a whole lot of nothing while Windows finds and updates itself to the latest version. This by itself is a pretty trivial effort, just go into your system settings and Check for Updates.</p>
+
+<h3 id="step-2-enable-the-windows-subsystem-for-linux">Step 2: Enable the Windows Subsystem for Linux</h3>
+
+<p>Again, I have no idea why Microsoft would disable this by default, especially since there really isn&rsquo;t much of a chance that this would actually confuse someone. To actually jump into the WSL you would need to open <code>cmd.exe</code> and run <code>bash</code> which as far as I know, is enough of a barrier to entry as most normal people need. However, I digress. Hit <code>Start</code> and search for <code>Turn Windows Features On or Off</code>, then look for the Windows Subsystem for Linux and turn it on.</p>
+
+<h3 id="step-3-updates-2-electric-boogaloo">Step 3: Updates 2: Electric Boogaloo</h3>
+
+<p>Once you&rsquo;ve enabled the WSL, you&rsquo;ll then be prompted that enabling it will require another update. Go ahead and get update it. Stay strong, we&rsquo;re almost there.</p>
+
+<h3 id="step-4-actually-getting-started">Step 4: (Actually) Getting Started</h3>
+
+<p>Now that we&rsquo;re completely up to date and have WSL enabled, we can finally get started. Head over to the Windows App Store and download Ubuntu (or some other flavor of GNU/Linux. As of right now, only SUSE and Ubuntu are available). That will install an app on your computer that will finally let you use Ubuntu natively(-ish) on your PC. However, that just opens up <code>cmd.exe</code> with Bash, which means you&rsquo;re still getting a terrible terminal emulator and an awful experience.</p>
+
+<h3 id="step-5-getting-it-to-look-good">Step 5: Getting it to look good.</h3>
+
+<p>Unlike other operating systems, there isn&rsquo;t exactly an over-abundance of ~good~ terminal emulators available for Windows. By default, Bash for Windows/Ubuntu will run in the equivalent of good ol&rsquo; command prompt. With minimal colors and poor/no powerline font support. To combat this, we&rsquo;re gonna have to use something else for the time being, until Microsoft decides to bundle in a usable terminal emulator into Windows. Here are a few options:
+- cmd.exe
+- mintty
+- cmder
+- comemu
+- hyper.js</p>
+
+<p>Of those, I&rsquo;ve used cmder, mintty, and hyper.js.</p>
+
+<p>The most important things I look for in a terminal emulator are:
+1. Performance: I want to be able to type and see the characters move across the screen real-time. Unfortunately, this isn&rsquo;t necessarily a given.
+2. Themeable: I&rsquo;m vain. I need to have pretty colors on the screen.
+3. Panes: Nice to have, but not necessary.
+4. Tabs: Nice to have, but not necessary.</p>
+
+<p>Hyper.js (a javascript electron based terminal emulator) is awful on Windows. It isn&rsquo;t that much better on macOS either. It&rsquo;s slow, uses a ton of system resources, and the &ldquo;amazing&rdquo; plugin system has a ton of issues running on Windows. Also, for some reason it doesn&rsquo;t like it when I use Ctrl+h to move between panes in Vim.</p>
+
+<p>Cmder is ok; I haven&rsquo;t really used it heavily with WSL, but have had a decent experience with it in the past when I was working on Windows in university. From the time I have tinkered around with it recently, it&rsquo;s been a bit slow to respond when working in Vim and generally moving around the file system.</p>
+
+<p>That leads us to mintty. If you want to get started with WSL, there really isn&rsquo;t any other choice but the <a href="https://www.github.com/mintty/wsltty">WSL Terminal</a> from my perspective. It&rsquo;s fast (using around 5MB of ram writing this in Vim, compared to ~100MB for .hyper.js sitting at an empty screen and 35MB for cmder), has nice themeing capabilities, and is relatively full featured. To get started, simply follow the instructions in the Readme for wsltty.</p>
+
+<h3 id="optional-step-6-xfce-on-wsl">Optional Step 6: XFCE on WSL</h3>
+
+<p>I poked around with this a bit over a weekend and was able to get it mostly working. With this, you&rsquo;ll have full access to <em>most</em> GUI GNU/Linux applications, albeit with a few caveats.</p>
+
+<h4 id="getting-started">Getting Started</h4>
+
+<p>To get started, you&rsquo;ll want to install a Windows X server, i.e. <a href="https://sourceforge.net/projects/xming/">XMing</a>, or <a href="https://sourceforge.net/projects/vcxsrv/">VcXsrv</a>. Install either of these to get started.</p>
+
+<p>Then, add the following to your <code>.bashrc</code>, changing <code>/some/directory/you/specify</code> to your own directory:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">export DISPLAY<span style="color:#f92672">=</span>:0
+export XDG_RUNTIME_DIR<span style="color:#f92672">=</span>/some/directory/you/specify 
+export RUNLEVEL<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>
+sudo mkdir /var/run/dbus
+sudo dbus-daemon --config-file<span style="color:#f92672">=</span>/usr/share/dbus-1/system.conf
+rm -rf .cache/sessions</code></pre></div>
+<p>Now, you can install XFCE:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt install xfce4
+sudo apt install blueman
+sudo apt install gnome-themes-standard
+sudo apt-get install libcanberra-gtk3-module</code></pre></div>
+<p>From there, assuming everything went smoothly, you should be able to run the following and get a GUI:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">xfce4-session</code></pre></div>
+<p>Thanks to /u/kenshen for his <a href="https://www.reddit.com/r/bashonubuntuonwindows/comments/6ysgn4/guide_to_xfce4_install_in_wsl_for_advanced_noobs/">post</a> on /r/bashonubuntuonwindows</p>
+
+<p>After getting all that setup, you now have access to any number of terminal emulators on GNU/Linux. However, I&rdquo;ll be sticking with WSLtty for now.</p>
+
+<h2 id="using-wsl">Using WSL</h2>
+
+<p>Now, onto actually using WSL. As mentioned before, the pain of setting up a functional and nice-to-look-at terminal emulator was a huge pain in the ass. Since the main two requirements were performance and themeable, Mintty/WSLtty seemed to cover both of those bases. However, for those coming from iTerm2 with its nice split panes and easy movement with keyboard shortcuts, this was still going to be an uphill battle.</p>
+
+<h3 id="using-tmux">Using tmux</h3>
+
+<p>To combat this, I started using tmux more. I had already been using tmux in the context of logging into an instance, starting tmux, and then creating splits with tmux to allow myself to run processes, attach/detach from sessions, and generally not hate my life. Since I would be moving from OS to OS and terminal emulator to terminal emulator, it made less sense for me to put the burden on myself of memorizing different keyboard shortcuts to do things that I would want across all of my environments.</p>
+
+<p>Here is my <code>.tmux.conf</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-config" data-lang="config"># remap prefix from &#39;C-b&#39; to &#39;C-a&#39;
+unbind C-b
+set-option -g prefix C-a
+bind-key C-a send-prefix
+
+# split panes using d and s, a la iTerm2
+bind -n M-d split-window -h
+bind -n M-s split-window -v
+unbind &#39;&#34;&#39;
+unbind %
+
+# reload config file (change file location to your the tmux.conf you want to use)
+bind r source-file ~/.tmux.conf
+
+bind -n M-j select-pane -D 
+bind -n M-k select-pane -U
+bind -n M-h select-pane -L
+bind -n M-l select-pane -R
+
+set -g mouse on
+set -g base-index 1
+setw -g pane-base-index 1</code></pre></div>
+<p>Here, I switch the prefix from the default <code>C-b</code> to a more sensible <code>C-a</code> and change the split behavior to <code>M-d</code> and <code>M-s</code> (alt+d and alt+s) to better align with my habitual cmd+d pane splitting in iTerm2. I also enabled mouse movement for scrolling through history, logs, etc. and updated the <code>pane-base-index</code> to start at 1 for better ergonomics. Additionally, I&rsquo;ve added the ability to move between panes with <code>hjkl</code> a la Vim with the <code>alt</code> modifier key. Now, I&rsquo;ve simply added the following to my <code>.bashrc</code> to start tmux every time:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[[</span> $- !<span style="color:#f92672">=</span> *i* <span style="color:#f92672">]]</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#66d9ef">return</span>
+<span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span>$TMUX<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span> <span style="color:#f92672">&amp;&amp;</span> exec tmux</code></pre></div>
+<h3 id="fish-a-better-shell">Fish: A better shell</h3>
+
+<p>Now that we have some basic movement and functionality in place, it&rsquo;s time to upgrade our shell. Bash is great, but it lacks a lot of nice-to-haves that <em>can</em> be fixed with adding a whole bunch of stuff to your <code>.bashrc</code> or <code>.bash_profile</code>, but I want that stuff out of the box. To get this, I use <a href="https://fishshell.com/">Fish</a>. Fish offers a lot of great features such as better auto-completion of commands, a package manager (<a href="https://github.com/oh-my-fish/oh-my-fish">Oh My Fish</a>, man page completion, and editing themes in a web based UI (which admittedly, I don&rsquo;t use very often)).</p>
+
+<p>Installing Fish is fairly straight forward, simply:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt-get install fish</code></pre></div>
+<p>Then, install oh-my-fish:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -L https://get.oh-my.fish | fish</code></pre></div>
+<p>I use the agnoster theme, install with:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">omf install agnoster</code></pre></div>
+<p>Now, all you need to do is update your shell. Supposedly WSL now supports changing shells with <code>chsh</code>, but I haven&rsquo;t been able to get it to work. I stick this in the bottom of my <code>.bashrc</code> (hacky, I know):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -t <span style="color:#ae81ff">1</span> <span style="color:#f92672">&amp;&amp;</span> -x /usr/bin/fish <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+    exec /usr/bin/fish
+<span style="color:#66d9ef">fi</span></code></pre></div>
+<h3 id="additional-important-info">Additional (important) Info</h3>
+
+<p>Now, WSL isn&rsquo;t exactly 100% interop with Windows. Even something as simple as opening a file in <code>notepad.exe</code> isn&rsquo;t going to work out of the box. For one, Microsoft doesn&rsquo;t want you working with files in the WSL in Windows, this can cause issues as the file systems between the two are sufficiently different. Additionally, even looking for the WSL in explorer isn&rsquo;t very easy. To access your home directory, you&rsquo;ll have to go to:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\&lt;</span>Windows User&gt;<span style="color:#ae81ff">\A</span>ppData<span style="color:#ae81ff">\L</span>ocal<span style="color:#ae81ff">\P</span>ackages<span style="color:#ae81ff">\C</span>anonicalGroupLimited.UbuntuonWindows_79rhkp1fndgsc<span style="color:#ae81ff">\L</span>ocalState<span style="color:#ae81ff">\r</span>ootfs</code></pre></div>
+<p>Note: Do not touch anything in here, if anything it should only be read-only.</p>
+
+<p>However, there aren&rsquo;t restrictions on accessing files in your Windows system. Simply go to:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">/mnt/c</code></pre></div>
+<p>From there, you&rsquo;ll have access to everything in you <code>C:/</code> drive, and should be able to access other drives as well.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>WSL is a very interesting project from Microsoft. It&rsquo;s very obviously trying to win over macOS users who have sworn off Windows as an operating system, instead opting for the greener fields of a unix-based operating system. Its recent <a href="https://github.com/Microsoft/console/releases/tag/1708.14008">release of a command line tool to change the color scheme of <code>cmd.exe</code></a> and moving the Ubuntu and SUSE distros to the Microsoft Store are very clearly signs of its desire to get back the developer demographic. From my time tinkering around with it, I have to say it&rsquo;s definitely a mixed bag. The level of effort for even getting it up and running is non-trivial, especially on a fan-less ultrabook that I&rsquo;m typing on right now. Additionally, the lack of an absolutely knock-out terminal emulator to use for WSL without significant research is incredibly off-putting for those trying to get started.</p>
+
+<p>There are certainly resources out there for figuring out how to get up and running, <a href="https://www.reddit.com/r/bashonubuntuonwindows">/r/bashonubuntuonwindows</a> comes to mind as a decent, though somewhat spare place for answers, and their github <a href="https://www.github.com/Microsoft/WSL">repo</a> certainly has answers if you&rsquo;re willing to dig through some Github issues. Unfortunately, it just isn&rsquo;t &ldquo;out of the box&rdquo; enough to really recommend anyone use as of right now. Especially, if you&rsquo;re just getting started.</p>
+
+<p>If you have a great <code>.tmux.conf</code>, <code>.bashrc</code>, etc., you might be able to switch over relatively easily. But, until Microsoft fixes some of the random exant issues with things like <a href="https://github.com/Microsoft/WSL/issues/376"><code>dbus</code> not properly starting</a>, or <a href="https://github.com/Microsoft/WSL/issues/2448">WSL randomly having issues finding certain files</a>, this is kind of a futile exercise. You can certainly <em>get stuff done</em>, at the expense of spending a ton of time <em>getting stupid stuff done</em>.</p>
+
+
+
+    
+        <div class="social">
+  
+    <div>
+        <a href="mailto:hi@sonnyshi.com">Email</a>
+    </div>
+  
+    <div>
+        <a href="https://twitter.com/winebaths">Follow @winebaths</a>
+    </div>
+  
+    <div>
+        <a href="https://github.com/thisisshi">Github</a>
+    </div>
+  
+    <div>
+        <a href="https://linkedin.com/in/sonnyshi">LinkedIn</a>
+    </div>
+  
+</div>
+
+
+
+    
+  </div>
+
+  
+
+
+
+<div id="sidebar">
+  
+  <a href="/img/portrait.jpg" class="image-link">
+    <img class="logo" src="/img/portrait.jpg"/>
+  </a>
+  
+
+  <h2>URLs</h2>
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/post/">All Articles</a></li>
+    
+  </ul>
+
+  <h2>Recent posts</h2>
+  <ul>
+    
+      
+        <li><a href="/post/up-and-running-wsl/">Getting Up and Running with the Windows Subsystem for Linux</a></li>
+      
+    
+  </ul>
+
+  <h2>Projects</h2>
+  <ul>
+    
+      <li><a href="https://github.com/cloud-custodian/cloud-custodian" target="_blank">Cloud Custodian</li>
+    
+      <li><a href="https://github.com/thisisshi/SoftwareEngineerLatexResume" target="_blank">SoftwareEngineerLatexResume</li>
+    
+      <li><a href="https://github.com/thisisshi/dotfiles" target="_blank">dotfiles</li>
+    
+  </ul>
+</div>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src=/js/jquery-1.11.2.min.js></script>
+  <script src=/js/main.js></script>
+
+  
+  <script src=/js/jquery.magnific-popup.min.js></script>
+
+  
+  
+
+  
+</body>
+</html>
+
