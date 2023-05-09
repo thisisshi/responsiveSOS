@@ -98,19 +98,19 @@
 <h4 id="getting-started">Getting Started</h4>
 <p>To get started, you&rsquo;ll want to install a Windows X server, i.e. <a href="https://sourceforge.net/projects/xming/">XMing</a>, or <a href="https://sourceforge.net/projects/vcxsrv/">VcXsrv</a>. Install either of these to get started.</p>
 <p>Then, add the following to your <code>.bashrc</code>, changing <code>/some/directory/you/specify</code> to your own directory:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">export DISPLAY<span style="color:#f92672">=</span>:0
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">export DISPLAY<span style="color:#f92672">=</span>:0
 export XDG_RUNTIME_DIR<span style="color:#f92672">=</span>/some/directory/you/specify 
 export RUNLEVEL<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>
 sudo mkdir /var/run/dbus
 sudo dbus-daemon --config-file<span style="color:#f92672">=</span>/usr/share/dbus-1/system.conf
 rm -rf .cache/sessions
 </code></pre></div><p>Now, you can install XFCE:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt install xfce4
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt install xfce4
 sudo apt install blueman
 sudo apt install gnome-themes-standard
 sudo apt-get install libcanberra-gtk3-module
 </code></pre></div><p>From there, assuming everything went smoothly, you should be able to run the following and get a GUI:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">xfce4-session
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">xfce4-session
 </code></pre></div><p>Thanks to /u/kenshen for his <a href="https://www.reddit.com/r/bashonubuntuonwindows/comments/6ysgn4/guide_to_xfce4_install_in_wsl_for_advanced_noobs/">post</a> on /r/bashonubuntuonwindows</p>
 <p>After getting all that setup, you now have access to any number of terminal emulators on GNU/Linux. However, I&quot;ll be sticking with WSLtty for now.</p>
 <h2 id="using-wsl">Using WSL</h2>
@@ -118,7 +118,7 @@ sudo apt-get install libcanberra-gtk3-module
 <h3 id="using-tmux">Using tmux</h3>
 <p>To combat this, I started using tmux more. I had already been using tmux in the context of logging into an instance, starting tmux, and then creating splits with tmux to allow myself to run processes, attach/detach from sessions, and generally not hate my life. Since I would be moving from OS to OS and terminal emulator to terminal emulator, it made less sense for me to put the burden on myself of memorizing different keyboard shortcuts to do things that I would want across all of my environments.</p>
 <p>Here is my <code>.tmux.conf</code>:</p>
-<pre><code class="language-config" data-lang="config"># remap prefix from 'C-b' to 'C-a'
+<pre tabindex="0"><code class="language-config" data-lang="config"># remap prefix from 'C-b' to 'C-a'
 unbind C-b
 set-option -g prefix C-a
 bind-key C-a send-prefix
@@ -141,31 +141,33 @@ set -g mouse on
 set -g base-index 1
 setw -g pane-base-index 1
 </code></pre><p>Here, I switch the prefix from the default <code>C-b</code> to a more sensible <code>C-a</code> and change the split behavior to <code>M-d</code> and <code>M-s</code> (alt+d and alt+s) to better align with my habitual cmd+d pane splitting in iTerm2. I also enabled mouse movement for scrolling through history, logs, etc. and updated the <code>pane-base-index</code> to start at 1 for better ergonomics. Additionally, I&rsquo;ve added the ability to move between panes with <code>hjkl</code> a la Vim with the <code>alt</code> modifier key. Now, I&rsquo;ve simply added the following to my <code>.bashrc</code> to start tmux every time:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[[</span> $- !<span style="color:#f92672">=</span> *i* <span style="color:#f92672">]]</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#66d9ef">return</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[[</span> $- !<span style="color:#f92672">=</span> *i* <span style="color:#f92672">]]</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#66d9ef">return</span>
 <span style="color:#f92672">[[</span> -z <span style="color:#e6db74">&#34;</span>$TMUX<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span> <span style="color:#f92672">&amp;&amp;</span> exec tmux
 </code></pre></div><h3 id="fish-a-better-shell">Fish: A better shell</h3>
 <p>Now that we have some basic movement and functionality in place, it&rsquo;s time to upgrade our shell. Bash is great, but it lacks a lot of nice-to-haves that <em>can</em> be fixed with adding a whole bunch of stuff to your <code>.bashrc</code> or <code>.bash_profile</code>, but I want that stuff out of the box. To get this, I use <a href="https://fishshell.com/">Fish</a>. Fish offers a lot of great features such as better auto-completion of commands, a package manager (<a href="https://github.com/oh-my-fish/oh-my-fish">Oh My Fish</a>, man page completion, and editing themes in a web based UI (which admittedly, I don&rsquo;t use very often)).</p>
 <p>Installing Fish is fairly straight forward, simply:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt-get install fish
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt-get install fish
 </code></pre></div><p>Then, install oh-my-fish:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -L https://get.oh-my.fish | fish
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -L https://get.oh-my.fish | fish
 </code></pre></div><p>I use the agnoster theme, install with:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">omf install agnoster
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">omf install agnoster
 </code></pre></div><p>Now, all you need to do is update your shell. Supposedly WSL now supports changing shells with <code>chsh</code>, but I haven&rsquo;t been able to get it to work. I stick this in the bottom of my <code>.bashrc</code> (hacky, I know):</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -t <span style="color:#ae81ff">1</span> <span style="color:#f92672">&amp;&amp;</span> -x /usr/bin/fish <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -t <span style="color:#ae81ff">1</span> <span style="color:#f92672">&amp;&amp;</span> -x /usr/bin/fish <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
     exec /usr/bin/fish
 <span style="color:#66d9ef">fi</span>
 </code></pre></div><h3 id="additional-important-info">Additional (important) Info</h3>
 <p>Now, WSL isn&rsquo;t exactly 100% interop with Windows. Even something as simple as opening a file in <code>notepad.exe</code> isn&rsquo;t going to work out of the box. For one, Microsoft doesn&rsquo;t want you working with files in the WSL in Windows, this can cause issues as the file systems between the two are sufficiently different. Additionally, even looking for the WSL in explorer isn&rsquo;t very easy. To access your home directory, you&rsquo;ll have to go to:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\&lt;</span>Windows User&gt;<span style="color:#ae81ff">\A</span>ppData<span style="color:#ae81ff">\L</span>ocal<span style="color:#ae81ff">\P</span>ackages<span style="color:#ae81ff">\C</span>anonicalGroupLimited.UbuntuonWindows_79rhkp1fndgsc<span style="color:#ae81ff">\L</span>ocalState<span style="color:#ae81ff">\r</span>ootfs
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\&lt;</span>Windows User&gt;<span style="color:#ae81ff">\A</span>ppData<span style="color:#ae81ff">\L</span>ocal<span style="color:#ae81ff">\P</span>ackages<span style="color:#ae81ff">\C</span>anonicalGroupLimited.UbuntuonWindows_79rhkp1fndgsc<span style="color:#ae81ff">\L</span>ocalState<span style="color:#ae81ff">\r</span>ootfs
 </code></pre></div><p>Note: Do not touch anything in here, if anything it should only be read-only.</p>
 <p>However, there aren&rsquo;t restrictions on accessing files in your Windows system. Simply go to:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">/mnt/c
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">/mnt/c
 </code></pre></div><p>From there, you&rsquo;ll have access to everything in you <code>C:/</code> drive, and should be able to access other drives as well.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>WSL is a very interesting project from Microsoft. It&rsquo;s very obviously trying to win over macOS users who have sworn off Windows as an operating system, instead opting for the greener fields of a unix-based operating system. Its recent <a href="https://github.com/Microsoft/console/releases/tag/1708.14008">release of a command line tool to change the color scheme of <code>cmd.exe</code></a> and moving the Ubuntu and SUSE distros to the Microsoft Store are very clearly signs of its desire to get back the developer demographic. From my time tinkering around with it, I have to say it&rsquo;s definitely a mixed bag. The level of effort for even getting it up and running is non-trivial, especially on a fan-less ultrabook that I&rsquo;m typing on right now. Additionally, the lack of an absolutely knock-out terminal emulator to use for WSL without significant research is incredibly off-putting for those trying to get started.</p>
 <p>There are certainly resources out there for figuring out how to get up and running, <a href="https://www.reddit.com/r/bashonubuntuonwindows">/r/bashonubuntuonwindows</a> comes to mind as a decent, though somewhat spare place for answers, and their github <a href="https://www.github.com/Microsoft/WSL">repo</a> certainly has answers if you&rsquo;re willing to dig through some Github issues. Unfortunately, it just isn&rsquo;t &ldquo;out of the box&rdquo; enough to really recommend anyone use as of right now. Especially, if you&rsquo;re just getting started.</p>
 <p>If you have a great <code>.tmux.conf</code>, <code>.bashrc</code>, etc., you might be able to switch over relatively easily. But, until Microsoft fixes some of the random exant issues with things like <a href="https://github.com/Microsoft/WSL/issues/376"><code>dbus</code> not properly starting</a>, or <a href="https://github.com/Microsoft/WSL/issues/2448">WSL randomly having issues finding certain files</a>, this is kind of a futile exercise. You can certainly <em>get stuff done</em>, at the expense of spending a ton of time <em>getting stupid stuff done</em>.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 
 
 
